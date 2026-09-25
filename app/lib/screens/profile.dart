@@ -30,8 +30,8 @@ class ProfileScreen extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: const [
-                    Text('Asha Menon', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-                    Text('asha@gmail.com', style: TextStyle(color: Colors.grey)),
+                    Text('User Name', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+                    Text('Users emailid', style: TextStyle(color: Colors.grey)),
                   ],
                 ),
               ],

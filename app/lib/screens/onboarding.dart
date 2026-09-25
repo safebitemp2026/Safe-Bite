@@ -168,7 +168,7 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
               const Text('Gender', style: TextStyle(fontWeight: FontWeight.bold)),
               const SizedBox(height: 8),
               Row(
-                children: ['Female', 'Male', 'Other'].map((g) {
+                children: ['Female', 'Male'].map((g) {
                   bool isSelected = selectedGender == g;
                   return Padding(
                     padding: const EdgeInsets.only(right: 8.0),

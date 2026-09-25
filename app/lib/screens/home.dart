@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import '../theme.dart';
 import '../widgets/bottom_nav.dart';
 import 'scan_result.dart';
-import 'safe_choice.dart';
 import 'ai_assistant.dart';
 import 'analytics.dart';
 import 'profile.dart';
@@ -16,12 +15,11 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _currentIndex = 0;
+  int _currentIndex = 1;
 
   final List<Widget> _pages = [
-    const HomeView(),
     const AnalyticsScreen(),
-    const HistoryScreen(),
+    const HomeView(),
     const ProfileScreen(),
   ];
 
@@ -96,19 +94,7 @@ class HomeView extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text('Hello, Sinan 👋', style: Theme.of(context).textTheme.displayMedium),
-                    const SizedBox(height: 4),
-                    const Text('Make informed choices for a healthier you.', style: TextStyle(color: Colors.grey)),
-                  ],
-                ),
-                Row(
-                  children: const [
-                    Icon(Icons.notifications_outlined, color: AppTheme.darkGreen),
-                    SizedBox(width: 16),
-                    CircleAvatar(
-                      backgroundColor: AppTheme.lightGreenAccent,
-                      child: Icon(Icons.person_outline, color: AppTheme.primaryGreen),
-                    )
+                    Text('Hello, User Name', style: Theme.of(context).textTheme.displayMedium),
                   ],
                 ),
               ],
@@ -153,12 +139,12 @@ class HomeView extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 16),
+                        const SizedBox(height: 24),
             _buildCard(
               context: context,
-              title: 'Safe Choice',
-              icon: Icons.check_circle_outline,
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const SafeChoiceScreen())),
+              title: 'Scan History',
+              icon: Icons.history,
+              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const HistoryScreen())),
               color: Colors.white,
             ),
             const SizedBox(height: 16),
@@ -168,28 +154,6 @@ class HomeView extends StatelessWidget {
               icon: Icons.chat_bubble_outline,
               onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const AiAssistantScreen())),
               color: Colors.white,
-            ),
-            const SizedBox(height: 24),
-            Container(
-              padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                color: AppTheme.lightGreenAccent,
-                borderRadius: BorderRadius.circular(16),
-                border: Border.all(color: AppTheme.primaryGreen.withValues(alpha: 0.3)),
-              ),
-              child: Row(
-                children: [
-                  const Icon(Icons.shield_outlined, color: AppTheme.primaryGreen, size: 30),
-                  const SizedBox(width: 16),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: const [
-                      Text('Your Safety Matters', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                      Text('Stay Informed. Stay healthy.', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                    ],
-                  ),
-                ],
-              ),
             ),
           ],
         ),
