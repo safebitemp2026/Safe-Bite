@@ -4,6 +4,7 @@ import '../widgets/bottom_nav.dart';
 import 'scan_result.dart';
 import 'ai_assistant.dart';
 import 'analytics.dart';
+import 'health_profile.dart';
 import 'profile.dart';
 import 'history.dart';
 
@@ -20,7 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final List<Widget> _pages = [
     const AnalyticsScreen(),
     const HomeView(),
-    const ProfileScreen(),
+    const HealthProfileScreen(),
   ];
 
   @override
@@ -41,6 +42,81 @@ class _HomeScreenState extends State<HomeScreen> {
 
 class HomeView extends StatelessWidget {
   const HomeView({super.key});
+
+  void _showScanPopup(BuildContext context) {
+    bool shareWithCommunity = false;
+    final TextEditingController productController = TextEditingController();
+    final FocusNode scanFocus = FocusNode();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return StatefulBuilder(
+          builder: (context, setStateDialog) {
+            scanFocus.addListener(() {
+              setStateDialog(() {});
+            });
+            return AlertDialog(
+              title: const Text('Scan Product'),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text('Enter the product name', style: TextStyle(fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 8),
+                  TextField(
+                    controller: productController,
+                    focusNode: scanFocus,
+                    decoration: InputDecoration(
+                      hintText: 'e.g. Lay\'s, Oreo...',
+                      hintStyle: TextStyle(
+                        color: scanFocus.hasFocus ? Colors.transparent : Colors.grey,
+                      ),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      Checkbox(
+                        value: shareWithCommunity,
+                        onChanged: (val) {
+                          setStateDialog(() {
+                            shareWithCommunity = val ?? false;
+                          });
+                        },
+                      ),
+                      const Expanded(
+                        child: Text('Do you like to share it with community website?'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    // Save to history
+                    final productName = productController.text.trim();
+                    if (productName.isNotEmpty) {
+                      scannedProductsHistory.add(productName);
+                    }
+                    Navigator.pop(context);
+                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ScanResultScreen()));
+                  },
+                  child: const Text('Scan'),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    ).then((_) => scanFocus.dispose());
+  }
 
   Widget _buildCard({
     required BuildContext context,
@@ -91,18 +167,28 @@ class HomeView extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Hello, User Name', style: Theme.of(context).textTheme.displayMedium),
-                  ],
+                Expanded(
+                  child: Text('Hello, User Name', style: Theme.of(context).textTheme.displayMedium),
+                ),
+                GestureDetector(
+                  onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ProfileScreen())),
+                  child: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: const BoxDecoration(
+                      color: AppTheme.lightGreenAccent,
+                      shape: BoxShape.circle,
+                    ),
+                    alignment: Alignment.center,
+                    child: const Icon(Icons.person, color: AppTheme.darkGreen),
+                  ),
                 ),
               ],
             ),
             const SizedBox(height: 32),
             // Scan Card
             GestureDetector(
-              onTap: () => Navigator.push(context, MaterialPageRoute(builder: (_) => const ScanResultScreen())),
+              onTap: () => _showScanPopup(context),
               child: Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(24),

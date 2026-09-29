@@ -137,7 +137,13 @@ class BasicDetailsScreen extends StatefulWidget {
 }
 
 class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
-  String selectedGender = 'Female';
+  String? selectedGender;
+  String _name = '';
+  String _age = '';
+  String _weight = '';
+  String _height = '';
+
+  bool get _isFormValid => _name.isNotEmpty && _age.isNotEmpty && _weight.isNotEmpty && _height.isNotEmpty && selectedGender != null;
 
   @override
   Widget build(BuildContext context) {
@@ -153,15 +159,15 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
               const SizedBox(height: 32),
               Text('Basic details', style: Theme.of(context).textTheme.displayMedium),
               const SizedBox(height: 24),
-              const TextField(decoration: InputDecoration(labelText: 'Full name')),
+              TextField(decoration: const InputDecoration(labelText: 'Full name'), onChanged: (val) => setState(() => _name = val.trim())),
               const SizedBox(height: 16),
-              const TextField(decoration: InputDecoration(labelText: 'Age'), keyboardType: TextInputType.number),
+              TextField(decoration: const InputDecoration(labelText: 'Age'), keyboardType: TextInputType.number, onChanged: (val) => setState(() => _age = val.trim())),
               const SizedBox(height: 16),
               Row(
-                children: const [
-                  Expanded(child: TextField(decoration: InputDecoration(labelText: 'Weight (kg)'), keyboardType: TextInputType.number)),
-                  SizedBox(width: 16),
-                  Expanded(child: TextField(decoration: InputDecoration(labelText: 'Height (cm)'), keyboardType: TextInputType.number)),
+                children: [
+                  Expanded(child: TextField(decoration: const InputDecoration(labelText: 'Weight (kg)'), keyboardType: TextInputType.number, onChanged: (val) => setState(() => _weight = val.trim()))),
+                  const SizedBox(width: 16),
+                  Expanded(child: TextField(decoration: const InputDecoration(labelText: 'Height (cm)'), keyboardType: TextInputType.number, onChanged: (val) => setState(() => _height = val.trim()))),
                 ],
               ),
               const SizedBox(height: 24),
@@ -186,7 +192,13 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/female_health'),
+                  onPressed: !_isFormValid ? null : () {
+                    if (selectedGender == 'Female') {
+                      Navigator.pushNamed(context, '/female_health');
+                    } else {
+                      Navigator.pushNamed(context, '/dietary_preference');
+                    }
+                  },
                   child: const Text('Continue'),
                 ),
               ),
@@ -292,10 +304,45 @@ class DietaryPreferenceScreen extends StatefulWidget {
 }
 
 class _DietaryPreferenceScreenState extends State<DietaryPreferenceScreen> {
-  String selected = 'Vegetarian';
+  String? selected;
+  final TextEditingController _otherController = TextEditingController();
+
+  @override
+  void dispose() {
+    _otherController.dispose();
+    super.dispose();
+  }
 
   Widget buildCard(String title) {
     bool isSelected = selected == title;
+    
+    if (title == 'Other' && isSelected) {
+      return Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: AppTheme.primaryGreen, width: 2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _otherController,
+                decoration: const InputDecoration(
+                  hintText: 'Type your preference...',
+                  border: InputBorder.none,
+                ),
+                autofocus: true,
+              ),
+            ),
+            const Icon(Icons.check_circle, color: AppTheme.primaryGreen),
+          ],
+        ),
+      );
+    }
+
     return GestureDetector(
       onTap: () => setState(() => selected = title),
       child: Container(
@@ -338,7 +385,7 @@ class _DietaryPreferenceScreenState extends State<DietaryPreferenceScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/medical_conditions'),
+                  onPressed: selected == null ? null : () => Navigator.pushNamed(context, '/medical_conditions'),
                   child: const Text('Continue'),
                 ),
               ),
@@ -357,8 +404,90 @@ class MedicalConditionsScreen extends StatefulWidget {
 }
 
 class _MedicalConditionsScreenState extends State<MedicalConditionsScreen> {
-  List<String> conditions = ['Diabetes', 'Hypertension', 'Heart disease', 'Kidney disease', 'Other'];
+  List<String> conditions = ['No condition', 'Diabetes', 'Hypertension', 'Heart disease', 'Kidney disease', 'Other'];
   List<String> selected = [];
+  final TextEditingController _otherController = TextEditingController();
+
+  @override
+  void dispose() {
+    _otherController.dispose();
+    super.dispose();
+  }
+
+  Widget buildCard(String title) {
+    bool isSelected = selected.contains(title);
+    
+    if (title == 'Other' && isSelected) {
+      return Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 4),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: AppTheme.primaryGreen, width: 2),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: TextField(
+                controller: _otherController,
+                decoration: const InputDecoration(
+                  hintText: 'Type your condition...',
+                  border: InputBorder.none,
+                ),
+                autofocus: true,
+              ),
+            ),
+            IconButton(
+              icon: const Icon(Icons.close),
+              onPressed: () {
+                setState(() {
+                  selected.remove('Other');
+                  _otherController.clear();
+                });
+              },
+            ),
+            const Icon(Icons.check_circle, color: AppTheme.primaryGreen),
+          ],
+        ),
+      );
+    }
+
+    return GestureDetector(
+      onTap: () {
+        setState(() {
+          if (isSelected) {
+            selected.remove(title);
+            if (title == 'Other') _otherController.clear();
+          } else {
+            if (title == 'No condition') {
+              selected.clear();
+              _otherController.clear();
+            } else {
+              selected.remove('No condition');
+            }
+            selected.add(title);
+          }
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        padding: const EdgeInsets.all(20),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          border: Border.all(color: isSelected ? AppTheme.primaryGreen : AppTheme.borderColor, width: isSelected ? 2 : 1),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Row(
+          children: [
+            Text(title, style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500)),
+            const Spacer(),
+            if (isSelected) const Icon(Icons.check_circle, color: AppTheme.primaryGreen),
+          ],
+        ),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -374,43 +503,19 @@ class _MedicalConditionsScreenState extends State<MedicalConditionsScreen> {
               const SizedBox(height: 32),
               Text('Medical conditions', style: Theme.of(context).textTheme.displayMedium),
               const SizedBox(height: 24),
-              Wrap(
-                spacing: 8,
-                runSpacing: 8,
-                children: conditions.map((c) {
-                  bool isSelected = selected.contains(c);
-                  return FilterChip(
-                    label: Text(c),
-                    selected: isSelected,
-                    onSelected: (val) {
-                      setState(() {
-                        if (val) {
-                          selected.add(c);
-                        } else {
-                          selected.remove(c);
-                        }
-                      });
-                    },
-                    selectedColor: AppTheme.lightGreenAccent,
-                    checkmarkColor: AppTheme.primaryGreen,
-                    backgroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: BorderSide(color: isSelected ? AppTheme.primaryGreen : AppTheme.borderColor)),
-                  );
-                }).toList(),
+              Expanded(
+                child: ListView(
+                  padding: EdgeInsets.zero,
+                  children: conditions.map((c) => buildCard(c)).toList(),
+                ),
               ),
-              const Spacer(),
-              Row(
-                children: [
-                  TextButton(onPressed: () => Navigator.pushNamed(context, '/upload_reports'), child: const Text('Skip', style: TextStyle(color: Colors.grey))),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/upload_reports'),
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: Text('Continue'),
-                    ),
-                  ),
-                ],
+              const SizedBox(height: 16),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: selected.isEmpty ? null : () => Navigator.pushNamed(context, '/upload_reports'),
+                  child: const Text('Continue'),
+                ),
               ),
             ],
           ),
@@ -420,32 +525,44 @@ class _MedicalConditionsScreenState extends State<MedicalConditionsScreen> {
   }
 }
 
-class UploadReportsScreen extends StatelessWidget {
+class UploadReportsScreen extends StatefulWidget {
   const UploadReportsScreen({super.key});
 
-  Widget buildUploadBox(String title, String subtitle) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.all(24),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: AppTheme.borderColor),
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Column(
-        children: [
-          const Icon(Icons.upload_file, color: AppTheme.primaryGreen, size: 40),
-          const SizedBox(height: 12),
-          Text(title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-          const SizedBox(height: 4),
-          Text(subtitle, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-        ],
+  @override
+  State<UploadReportsScreen> createState() => _UploadReportsScreenState();
+}
+
+class _UploadReportsScreenState extends State<UploadReportsScreen> {
+  bool healthUploaded = false;
+  bool allergyUploaded = false;
+
+  Widget buildUploadBox(String title, String subtitle, bool isUploaded, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.all(24),
+        decoration: BoxDecoration(
+          color: isUploaded ? AppTheme.lightGreenAccent : Colors.white,
+          border: Border.all(color: isUploaded ? AppTheme.primaryGreen : AppTheme.borderColor, width: isUploaded ? 2 : 1),
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Column(
+          children: [
+            Icon(isUploaded ? Icons.check_circle : Icons.upload_file, color: AppTheme.primaryGreen, size: 40),
+            const SizedBox(height: 12),
+            Text(isUploaded ? '${title.split(' ').first} report (Uploaded)' : title, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const SizedBox(height: 4),
+            Text(isUploaded ? 'File attached successfully' : subtitle, style: const TextStyle(color: Colors.grey, fontSize: 12)),
+          ],
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    bool canContinue = healthUploaded || allergyUploaded;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -458,16 +575,20 @@ class UploadReportsScreen extends StatelessWidget {
               const SizedBox(height: 32),
               Text('Upload reports', style: Theme.of(context).textTheme.displayMedium),
               const SizedBox(height: 24),
-              buildUploadBox('Health report (PDF)', 'Upload latest medical test results'),
+              buildUploadBox('Health report (PDF)', 'Upload latest medical test results', healthUploaded, () {
+                setState(() => healthUploaded = !healthUploaded);
+              }),
               const SizedBox(height: 16),
-              buildUploadBox('Allergy report (PDF)', 'Upload test results'),
+              buildUploadBox('Allergy report (PDF)', 'Upload test results', allergyUploaded, () {
+                setState(() => allergyUploaded = !allergyUploaded);
+              }),
               const Spacer(),
               Row(
                 children: [
                   TextButton(onPressed: () => Navigator.pushNamed(context, '/profile_setup'), child: const Text('Skip', style: TextStyle(color: Colors.grey))),
                   const Spacer(),
                   ElevatedButton(
-                    onPressed: () => Navigator.pushNamed(context, '/profile_setup'),
+                    onPressed: canContinue ? () => Navigator.pushNamed(context, '/profile_setup') : null,
                     child: const Padding(
                       padding: EdgeInsets.symmetric(horizontal: 24),
                       child: Text('Continue'),

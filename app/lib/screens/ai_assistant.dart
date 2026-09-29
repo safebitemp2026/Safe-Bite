@@ -13,11 +13,6 @@ class AiAssistantScreen extends StatelessWidget {
           Expanded(
             child: ListView(
               padding: const EdgeInsets.all(24),
-              children: [
-                _buildChatBubble('Is this safe during pregnancy?', true),
-                _buildChatBubble('Check the label I just scanned', true),
-                _buildChatBubble('Flagged — contains MSG. Best to avoid for now.', false),
-              ],
             ),
           ),
           Container(
@@ -43,27 +38,6 @@ class AiAssistantScreen extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildChatBubble(String text, bool isUser) {
-    return Align(
-      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isUser ? AppTheme.darkGreen : AppTheme.lightGreenAccent,
-          borderRadius: BorderRadius.circular(16).copyWith(
-            bottomRight: isUser ? const Radius.circular(0) : const Radius.circular(16),
-            bottomLeft: !isUser ? const Radius.circular(0) : const Radius.circular(16),
-          ),
-        ),
-        child: Text(
-          text,
-          style: TextStyle(color: isUser ? Colors.white : AppTheme.darkGreen),
-        ),
       ),
     );
   }

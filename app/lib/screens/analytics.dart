@@ -1,8 +1,92 @@
 import 'package:flutter/material.dart';
 import '../theme.dart';
 
-class AnalyticsScreen extends StatelessWidget {
+class AnalyticsScreen extends StatefulWidget {
   const AnalyticsScreen({super.key});
+
+  @override
+  State<AnalyticsScreen> createState() => _AnalyticsScreenState();
+}
+
+class _AnalyticsScreenState extends State<AnalyticsScreen> {
+  final TextEditingController _foodController = TextEditingController();
+  final FocusNode _foodFocus = FocusNode();
+
+  @override
+  void initState() {
+    super.initState();
+    _foodFocus.addListener(() {
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _foodFocus.dispose();
+    _foodController.dispose();
+    super.dispose();
+  }
+
+  double _calories = 0;
+  double _sugar = 0;
+  double _protein = 0;
+  double _carbs = 0;
+  double _fat = 0;
+
+  final double _caloriesLimit = 2000;
+  final double _sugarLimit = 30;
+  final double _proteinLimit = 50; 
+  final double _carbsLimit = 250;
+  final double _fatLimit = 70;
+
+  void _addFood() {
+    if (_foodController.text.trim().isEmpty) return;
+    
+    // Mock parsing and retrieving nutritional values
+    setState(() {
+      _calories += 450;
+      _sugar += 12;
+      _protein += 25;
+      _carbs += 60;
+      _fat += 15;
+      _foodController.clear();
+    });
+    
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Food parsed and logged successfully!')),
+    );
+  }
+
+  Widget _buildMetricBar(String label, double current, double limit, String unit) {
+    double progress = current / limit;
+    if (progress > 1.0) progress = 1.0;
+    
+    Color progressColor = current > limit ? Colors.red : AppTheme.primaryGreen;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(label, style: const TextStyle(fontWeight: FontWeight.bold)),
+              Text('${current.toInt()}$unit / ${limit.toInt()}$unit', style: const TextStyle(color: Colors.grey, fontSize: 12)),
+            ],
+          ),
+          const SizedBox(height: 8),
+          LinearProgressIndicator(
+            value: progress,
+            backgroundColor: AppTheme.borderColor,
+            color: progressColor,
+            minHeight: 8,
+            borderRadius: BorderRadius.circular(4),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -12,111 +96,56 @@ class AnalyticsScreen extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Analytics', style: Theme.of(context).textTheme.displayMedium),
+            Text('Daily Consumption Tracker', style: Theme.of(context).textTheme.displayMedium),
+            const SizedBox(height: 8),
+            const Text('Manually enter foods consumed to track nutritional values.', style: TextStyle(color: Colors.grey)),
             const SizedBox(height: 24),
             Container(
-              padding: const EdgeInsets.all(20),
+              padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(16),
                 border: Border.all(color: AppTheme.borderColor),
               ),
-              child: Row(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    width: 60,
-                    height: 60,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      border: Border.all(color: AppTheme.primaryGreen, width: 4),
+                  const Text('Log Food', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+                  const SizedBox(height: 12),
+                  TextField(
+                    controller: _foodController,
+                    focusNode: _foodFocus,
+                    decoration: InputDecoration(
+                      hintText: _foodFocus.hasFocus ? '' : 'e.g. "200g rice, 150g chicken, 1 apple"',
+                      contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppTheme.borderColor)),
+                      enabledBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppTheme.borderColor)),
+                      focusedBorder: OutlineInputBorder(borderRadius: BorderRadius.circular(12), borderSide: const BorderSide(color: AppTheme.primaryGreen)),
                     ),
-                    alignment: Alignment.center,
-                    child: const Text('78', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 24, color: AppTheme.darkGreen)),
+                    maxLines: 2,
                   ),
-                  const SizedBox(width: 16),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: const [
-                        Text('Health score index', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-                        Text('Excellent improvement this week! Keep avoiding ultra-processed inputs.', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      ],
+                  const SizedBox(height: 16),
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: _addFood,
+                      child: const Text('Parse & Add'),
                     ),
                   ),
                 ],
               ),
             ),
-            const SizedBox(height: 24),
-            const Text('Weekly scan trend', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            const SizedBox(height: 16),
-            // Mock Bar Chart
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                _buildBar('M', 40),
-                _buildBar('T', 60),
-                _buildBar('W', 30),
-                _buildBar('T', 80),
-                _buildBar('F', 50),
-                _buildBar('S', 90),
-                _buildBar('S', 60),
-              ],
-            ),
             const SizedBox(height: 32),
-            const Text('Top flagged ingredients', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
+            const Text('Nutritional Intake', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
             const SizedBox(height: 16),
-            Wrap(
-              spacing: 8,
-              children: [
-                _buildIngredientChip('Palm oil'),
-                _buildIngredientChip('MSG'),
-                _buildIngredientChip('Aspartame'),
-              ],
-            ),
-            const SizedBox(height: 32),
-            const Text('Today\'s consumption', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16)),
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                Expanded(
-                  child: LinearProgressIndicator(
-                    value: 0.55,
-                    backgroundColor: AppTheme.borderColor,
-                    color: AppTheme.primaryGreen,
-                    minHeight: 8,
-                    borderRadius: BorderRadius.circular(4),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                const Text('55%', style: TextStyle(fontWeight: FontWeight.bold)),
-              ],
-            ),
+            _buildMetricBar('Calories', _calories, _caloriesLimit, ' kcal'),
+            _buildMetricBar('Protein', _protein, _proteinLimit, 'g'),
+            _buildMetricBar('Carbs', _carbs, _carbsLimit, 'g'),
+            _buildMetricBar('Fat', _fat, _fatLimit, 'g'),
+            _buildMetricBar('Sugar', _sugar, _sugarLimit, 'g'),
           ],
         ),
       ),
-    );
-  }
-
-  Widget _buildBar(String label, double height) {
-    return Column(
-      children: [
-        Container(width: 20, height: height, decoration: BoxDecoration(color: AppTheme.primaryGreen, borderRadius: BorderRadius.circular(4))),
-        const SizedBox(height: 8),
-        Text(label, style: const TextStyle(color: Colors.grey, fontSize: 12)),
-      ],
-    );
-  }
-
-  Widget _buildIngredientChip(String label) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.red[50],
-        border: Border.all(color: Colors.red),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(label, style: const TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
     );
   }
 }
