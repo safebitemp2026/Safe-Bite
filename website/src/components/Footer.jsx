@@ -25,18 +25,7 @@ export default function Footer({ setCurrentPage, onOpenAppModal }) {
           >
             Home
           </button>
-          <button 
-            onClick={() => setCurrentPage('about')}
-            className="hover:text-forest transition-colors cursor-pointer"
-          >
-            About Us
-          </button>
-          <button 
-            onClick={() => setCurrentPage('community')}
-            className="hover:text-forest transition-colors cursor-pointer"
-          >
-            Community Insights
-          </button>
+
           <button 
             onClick={onOpenAppModal}
             className="hover:text-forest transition-colors cursor-pointer"

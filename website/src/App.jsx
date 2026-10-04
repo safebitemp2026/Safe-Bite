@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
 import ProductDetailPage from './pages/ProductDetailPage';
-import CommunityPage from './pages/CommunityPage';
 import AppModal from './components/AppModal';
 import { PRODUCTS } from './data/products';
 
@@ -43,13 +41,6 @@ export default function App() {
           />
         )}
 
-        {currentPage === 'about' && (
-          <AboutPage 
-            onOpenAppModal={() => setIsAppModalOpen(true)}
-            setCurrentPage={handlePageChange}
-          />
-        )}
-
         {currentPage === 'product' && (
           <ProductDetailPage 
             product={selectedProduct}
@@ -59,12 +50,7 @@ export default function App() {
           />
         )}
 
-        {currentPage === 'community' && (
-          <CommunityPage 
-            onSelectProduct={handleSelectProduct}
-            onOpenAppModal={() => setIsAppModalOpen(true)}
-          />
-        )}
+
       </main>
 
       {/* Persistent Footer */}

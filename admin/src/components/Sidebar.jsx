@@ -7,16 +7,11 @@ const Sidebar = () => {
   const navItems = [
     { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Users', path: '/dashboard/users', icon: Users },
-    { name: 'Analytics', path: '/dashboard/analytics', icon: BarChart3 },
-    { name: 'Food Database', path: '/dashboard/food-database', icon: Database },
-    { name: 'Allergy Mapping', path: '/dashboard/allergy-mapping', icon: ShieldAlert },
-    { name: 'User Reports', path: '/dashboard/reports', icon: FileText },
-    { name: 'Settings', path: '/dashboard/settings', icon: Settings },
   ];
 
   return (
     <aside className="sidebar">
-      <div className="p-6 flex items-center gap-3">
+      <div className="p-6 flex items-center gap-3" style={{ marginBottom: '20px' }}>
         <ShieldCheck size={32} color="white" />
         <span className="text-xl font-bold">SafeBite</span>
       </div>
@@ -43,12 +38,12 @@ const Sidebar = () => {
 
       <div className="p-6 mt-auto">
         <div className="mb-6 opacity-70">
-           <div className="text-sm font-handwriting transform -rotate-6">Safe Food.</div>
+           <div className="text-sm font-handwriting transform -rotate-6 mb-2">Safe Food.</div>
            <div className="text-sm font-handwriting transform -rotate-6">Healthier Lives.</div>
         </div>
-        <Link to="/login" className="flex items-center gap-3 px-4 py-3 text-white hover:bg-primary-hover rounded-lg text-sm font-medium transition-colors">
-          <LogOut size={20} />
+        <Link to="/login" className="flex items-center justify-end gap-3 px-4 py-3 text-white hover:bg-primary-hover rounded-lg text-sm font-medium transition-colors">
           Logout
+          <LogOut size={20} />
         </Link>
       </div>
     </aside>
