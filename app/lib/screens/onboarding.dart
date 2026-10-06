@@ -193,6 +193,7 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
                 width: double.infinity,
                 child: ElevatedButton(
                   onPressed: !_isFormValid ? null : () {
+                    globalGender = selectedGender!;
                     if (selectedGender == 'Female') {
                       Navigator.pushNamed(context, '/female_health');
                     } else {
@@ -384,9 +385,18 @@ class _DietaryPreferenceScreenState extends State<DietaryPreferenceScreen> {
               const Spacer(),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: selected == null ? null : () => Navigator.pushNamed(context, '/medical_conditions'),
-                  child: const Text('Continue'),
+                child: ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _otherController,
+                  builder: (context, value, child) {
+                    bool isEnabled = selected != null;
+                    if (selected == 'Other' && value.text.trim().isEmpty) {
+                      isEnabled = false;
+                    }
+                    return ElevatedButton(
+                      onPressed: isEnabled ? () => Navigator.pushNamed(context, '/medical_conditions') : null,
+                      child: const Text('Continue'),
+                    );
+                  },
                 ),
               ),
             ],
@@ -512,9 +522,18 @@ class _MedicalConditionsScreenState extends State<MedicalConditionsScreen> {
               const SizedBox(height: 16),
               SizedBox(
                 width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: selected.isEmpty ? null : () => Navigator.pushNamed(context, '/upload_reports'),
-                  child: const Text('Continue'),
+                child: ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: _otherController,
+                  builder: (context, value, child) {
+                    bool isEnabled = selected.isNotEmpty;
+                    if (selected.contains('Other') && value.text.trim().isEmpty) {
+                      isEnabled = false;
+                    }
+                    return ElevatedButton(
+                      onPressed: isEnabled ? () => Navigator.pushNamed(context, '/upload_reports') : null,
+                      child: const Text('Continue'),
+                    );
+                  },
                 ),
               ),
             ],

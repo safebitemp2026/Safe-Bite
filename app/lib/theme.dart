@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+String globalGender = 'Female';
+
 class AppTheme {
   // Colors
   static const Color background = Color(0xFFFCFBF8); // Warm off-white

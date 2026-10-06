@@ -127,9 +127,14 @@ class _AnalyticsScreenState extends State<AnalyticsScreen> {
                   const SizedBox(height: 16),
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _addFood,
-                      child: const Text('Parse & Add'),
+                    child: ValueListenableBuilder<TextEditingValue>(
+                      valueListenable: _foodController,
+                      builder: (context, value, child) {
+                        return ElevatedButton(
+                          onPressed: value.text.trim().isNotEmpty ? _addFood : null,
+                          child: const Text('Parse & Add'),
+                        );
+                      },
                     ),
                   ),
                 ],

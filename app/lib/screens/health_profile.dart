@@ -10,7 +10,6 @@ class HealthProfileScreen extends StatefulWidget {
 
 class _HealthProfileScreenState extends State<HealthProfileScreen> {
   final TextEditingController _reasonController = TextEditingController();
-  final String _gender = 'Female'; // Mock gender
   bool _isDietPlanGenerated = false;
 
   void _showAlternatePlanDialog() {
@@ -50,14 +49,29 @@ class _HealthProfileScreenState extends State<HealthProfileScreen> {
               onPressed: () => Navigator.pop(context),
               child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
             ),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.pop(context);
-                _reasonController.clear();
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('Alternate Diet Plan Generated!')));
-                Navigator.push(context, MaterialPageRoute(builder: (_) => const GeneratedDietPlanScreen()));
+            ValueListenableBuilder<TextEditingValue>(
+              valueListenable: _reasonController,
+              builder: (context, value, child) {
+                final isEnabled = value.text.trim().isNotEmpty;
+                return ElevatedButton(
+                  onPressed: isEnabled
+                      ? () {
+                          Navigator.pop(context);
+                          _reasonController.clear();
+                          ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'Alternate Diet Plan Generated!')));
+                          Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (_) =>
+                                      const GeneratedDietPlanScreen()));
+                        }
+                      : null,
+                  child: const Text('Submit & Generate'),
+                );
               },
-              child: const Text('Submit & Generate'),
             ),
           ],
         );
@@ -137,7 +151,7 @@ class _HealthProfileScreenState extends State<HealthProfileScreen> {
                 ),
               ),
             ),
-            if (_gender == 'Female') ...[
+            if (globalGender == 'Female') ...[
               GestureDetector(
                 onTap: () {
                   Navigator.push(context, MaterialPageRoute(builder: (_) => const SpecificGuidanceScreen(title: 'Pregnancy-Specific Guidance', content: 'Include folate-rich foods. Avoid raw seafood and unpasteurized dairy.')));

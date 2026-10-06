@@ -98,17 +98,29 @@ class HomeView extends StatelessWidget {
                   onPressed: () => Navigator.pop(context),
                   child: const Text('Cancel', style: TextStyle(color: Colors.grey)),
                 ),
-                ElevatedButton(
-                  onPressed: () {
-                    // Save to history
-                    final productName = productController.text.trim();
-                    if (productName.isNotEmpty) {
-                      scannedProductsHistory.add(productName);
-                    }
-                    Navigator.pop(context);
-                    Navigator.push(context, MaterialPageRoute(builder: (_) => const ScanResultScreen()));
+                ValueListenableBuilder<TextEditingValue>(
+                  valueListenable: productController,
+                  builder: (context, value, child) {
+                    final bool isEnabled = value.text.trim().isNotEmpty;
+                    return ElevatedButton(
+                      onPressed: isEnabled
+                          ? () {
+                              // Save to history
+                              final productName = productController.text.trim();
+                              if (productName.isNotEmpty) {
+                                scannedProductsHistory.add(productName);
+                              }
+                              Navigator.pop(context);
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) =>
+                                          const ScanResultScreen()));
+                            }
+                          : null,
+                      child: const Text('Scan'),
+                    );
                   },
-                  child: const Text('Scan'),
                 ),
               ],
             );

@@ -16,7 +16,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<String> _medicalConditions = [];
   String _healthReport = 'No report uploaded';
   String _allergyReport = 'No report uploaded';
-  final String _gender = 'Not Enterted';
   bool _isPregnant = false;
   bool _wantPcosWarnings = false;
 
@@ -436,7 +435,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               trailing: const Icon(Icons.chevron_right),
               onTap: _showDietaryPreferenceDialog,
             ),
-            if (_gender == 'Female') ...[
+            if (globalGender == 'Female') ...[
               const Divider(),
               ListTile(
                 title: const Text('Female health'),
