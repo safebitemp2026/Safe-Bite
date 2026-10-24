@@ -1,8 +1,29 @@
-import React from 'react';
-import { User, Ban, Unlock, Clock, Trash2, X } from 'lucide-react';
+import React, { useState } from 'react';
+import { User, Ban, Unlock, Clock, Trash2, X, CheckCircle, AlertTriangle } from 'lucide-react';
 
-const UserActionModal = ({ selectedUser, onClose }) => {
+const UserActionModal = ({ selectedUser, onClose, onUpdateStatus, onDeleteUser }) => {
+  const [suspendDays, setSuspendDays] = useState(7);
   if (!selectedUser) return null;
+
+  const handleBlock = () => {
+    if (onUpdateStatus) onUpdateStatus(selectedUser.id || selectedUser.name, 'Blocked');
+    onClose();
+  };
+
+  const handleUnblock = () => {
+    if (onUpdateStatus) onUpdateStatus(selectedUser.id || selectedUser.name, 'Active');
+    onClose();
+  };
+
+  const handleSuspend = () => {
+    if (onUpdateStatus) onUpdateStatus(selectedUser.id || selectedUser.name, 'Suspended');
+    onClose();
+  };
+
+  const handleDelete = () => {
+    if (onDeleteUser) onDeleteUser(selectedUser.id || selectedUser.name);
+    onClose();
+  };
 
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4 transition-all">
@@ -19,7 +40,24 @@ const UserActionModal = ({ selectedUser, onClose }) => {
             
             <div className="min-w-0 pr-4 text-left">
               <h2 className="text-xl font-bold truncate m-0 text-left">Manage Actions</h2>
-              <p className="text-white/90 text-sm mt-1 font-medium truncate m-0 text-left">{selectedUser.name}</p>
+              <div className="flex items-center gap-2 mt-1 flex-wrap">
+                <p className="text-white/90 text-sm font-medium truncate m-0 text-left">{selectedUser.name}</p>
+                {selectedUser.status === 'Active' && (
+                  <span className="inline-flex items-center gap-1 bg-green-500/25 border border-white/30 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                    <CheckCircle size={12} /> Active
+                  </span>
+                )}
+                {selectedUser.status === 'Blocked' && (
+                  <span className="inline-flex items-center gap-1 bg-red-500/35 border border-white/30 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                    <AlertTriangle size={12} /> Blocked
+                  </span>
+                )}
+                {selectedUser.status === 'Suspended' && (
+                  <span className="inline-flex items-center gap-1 bg-amber-500/35 border border-white/30 text-white text-xs px-2 py-0.5 rounded-full font-semibold">
+                    <Clock size={12} /> Suspended
+                  </span>
+                )}
+              </div>
               <p className="text-white/70 text-xs mt-1.5 whitespace-normal break-words m-0 text-left">Choose an action below.</p>
             </div>
             
@@ -43,7 +81,11 @@ const UserActionModal = ({ selectedUser, onClose }) => {
                </div>
              </div>
              <div className="flex justify-start sm:justify-end w-full">
-               <button className="flex items-center gap-2 justify-center bg-red-500 text-white hover:bg-red-600 font-bold rounded-lg text-sm transition-colors shadow-sm" style={{ padding: '10px 20px', minWidth: '130px' }}>
+               <button 
+                 onClick={handleBlock}
+                 className="flex items-center gap-2 justify-center bg-red-500 text-white hover:bg-red-600 font-bold rounded-lg text-sm transition-colors shadow-sm cursor-pointer" 
+                 style={{ padding: '10px 20px', minWidth: '130px' }}
+               >
                  <Ban size={16} /> Block User
                </button>
              </div>
@@ -61,7 +103,11 @@ const UserActionModal = ({ selectedUser, onClose }) => {
                </div>
              </div>
              <div className="flex justify-start sm:justify-end w-full">
-               <button className="flex items-center gap-2 justify-center bg-primary text-white hover:bg-primary/90 font-bold rounded-lg text-sm transition-colors shadow-sm" style={{ padding: '10px 20px', minWidth: '130px' }}>
+               <button 
+                 onClick={handleUnblock}
+                 className="flex items-center gap-2 justify-center bg-primary text-white hover:bg-primary/90 font-bold rounded-lg text-sm transition-colors shadow-sm cursor-pointer" 
+                 style={{ padding: '10px 20px', minWidth: '130px' }}
+               >
                  <Unlock size={16} /> Unblock User
                </button>
              </div>
@@ -80,10 +126,19 @@ const UserActionModal = ({ selectedUser, onClose }) => {
              </div>
              <div className="flex justify-start sm:justify-end items-center gap-3 w-full">
                <div className="flex items-center gap-2 bg-gray-100 p-1.5 rounded-lg border border-gray-200">
-                 <input type="number" defaultValue="7" className="w-14 px-2 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium focus:outline-none focus:border-blue-500 text-center" />
+                 <input 
+                   type="number" 
+                   value={suspendDays} 
+                   onChange={(e) => setSuspendDays(e.target.value)}
+                   className="w-14 px-2 py-1 bg-white border border-gray-300 rounded-md text-sm font-medium focus:outline-none focus:border-blue-500 text-center" 
+                 />
                  <span className="text-sm text-gray-600 font-medium px-2">Days</span>
                </div>
-               <button className="flex items-center gap-2 justify-center bg-blue-500 text-white hover:bg-blue-600 font-bold rounded-lg text-sm transition-colors shadow-sm" style={{ padding: '10px 20px' }}>
+               <button 
+                 onClick={handleSuspend}
+                 className="flex items-center gap-2 justify-center bg-blue-500 text-white hover:bg-blue-600 font-bold rounded-lg text-sm transition-colors shadow-sm cursor-pointer" 
+                 style={{ padding: '10px 20px' }}
+               >
                  <Clock size={16} /> Suspend
                </button>
              </div>
@@ -101,7 +156,11 @@ const UserActionModal = ({ selectedUser, onClose }) => {
                </div>
              </div>
              <div className="flex justify-start sm:justify-end w-full">
-               <button className="flex items-center gap-2 justify-center bg-red-500 text-white hover:bg-red-600 font-bold rounded-lg text-sm transition-colors shadow-sm" style={{ padding: '10px 20px', minWidth: '130px' }}>
+               <button 
+                 onClick={handleDelete}
+                 className="flex items-center gap-2 justify-center bg-red-500 text-white hover:bg-red-600 font-bold rounded-lg text-sm transition-colors shadow-sm cursor-pointer" 
+                 style={{ padding: '10px 20px', minWidth: '130px' }}
+               >
                  <Trash2 size={16} /> Delete User
                </button>
              </div>

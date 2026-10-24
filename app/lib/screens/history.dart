@@ -47,9 +47,19 @@ class _HistoryScreenState extends State<HistoryScreen> {
                   elevation: 0,
                   child: ListTile(
                     onTap: () {
+                      final lower = product.toLowerCase();
+                      final bool isEdible = !lower.contains('non') &&
+                          !lower.contains('avoid') &&
+                          !lower.contains('bad') &&
+                          !lower.contains('unhealthy');
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (_) => const ScanResultScreen()),
+                        MaterialPageRoute(
+                          builder: (_) => ScanResultScreen(
+                            isEdible: isEdible,
+                            productName: product,
+                          ),
+                        ),
                       );
                     },
                     leading: const Icon(Icons.qr_code_scanner, color: AppTheme.darkGreen),

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 String globalGender = 'Female';
+final ValueNotifier<bool> globalIsPregnant = ValueNotifier<bool>(false);
+final ValueNotifier<bool> globalWantPcosWarnings = ValueNotifier<bool>(false);
 
 class AppTheme {
   // Colors

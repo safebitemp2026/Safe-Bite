@@ -152,49 +152,77 @@ class _HealthProfileScreenState extends State<HealthProfileScreen> {
               ),
             ),
             if (globalGender == 'Female') ...[
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const SpecificGuidanceScreen(title: 'Pregnancy-Specific Guidance', content: 'Include folate-rich foods. Avoid raw seafood and unpasteurized dairy.')));
+              ValueListenableBuilder<bool>(
+                valueListenable: globalIsPregnant,
+                builder: (context, isPregnant, _) {
+                  if (!isPregnant) return const SizedBox.shrink();
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SpecificGuidanceScreen(
+                            title: 'Pregnancy-Specific Guidance',
+                            content: 'Include folate-rich foods. Avoid raw seafood and unpasteurized dairy.',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: AppTheme.primaryGreen),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('Pregnancy-Specific Guidance', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.darkGreen)),
+                          Icon(Icons.arrow_forward_ios, size: 16, color: AppTheme.darkGreen),
+                        ],
+                      ),
+                    ),
+                  );
                 },
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: AppTheme.primaryGreen),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Pregnancy-Specific Guidance', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.darkGreen)),
-                      Icon(Icons.arrow_forward_ios, size: 16, color: AppTheme.darkGreen),
-                    ],
-                  ),
-                ),
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const SpecificGuidanceScreen(title: 'PCOD/PCOS Guidance', content: 'Consume anti-inflammatory foods. Avoid insulin-spiking foods.')));
+              ValueListenableBuilder<bool>(
+                valueListenable: globalWantPcosWarnings,
+                builder: (context, wantPcosWarnings, _) {
+                  if (!wantPcosWarnings) return const SizedBox.shrink();
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const SpecificGuidanceScreen(
+                            title: 'PCOD/PCOS Guidance',
+                            content: 'Consume anti-inflammatory foods. Avoid insulin-spiking foods.',
+                          ),
+                        ),
+                      );
+                    },
+                    child: Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(bottom: 16),
+                      padding: const EdgeInsets.all(16),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        border: Border.all(color: AppTheme.primaryGreen),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: const Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text('PCOD/PCOS Guidance', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.darkGreen)),
+                          Icon(Icons.arrow_forward_ios, size: 16, color: AppTheme.darkGreen),
+                        ],
+                      ),
+                    ),
+                  );
                 },
-                child: Container(
-                  width: double.infinity,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  padding: const EdgeInsets.all(16),
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    border: Border.all(color: AppTheme.primaryGreen),
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('PCOD/PCOS Guidance', style: TextStyle(fontWeight: FontWeight.bold, color: AppTheme.darkGreen)),
-                      Icon(Icons.arrow_forward_ios, size: 16, color: AppTheme.darkGreen),
-                    ],
-                  ),
-                ),
               ),
             ],
 

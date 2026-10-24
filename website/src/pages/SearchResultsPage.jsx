@@ -1,6 +1,6 @@
 import React from 'react';
 import { PRODUCTS } from '../data/products';
-import { ArrowLeft, Search, AlertCircle } from 'lucide-react';
+import { ArrowLeft, Search, AlertCircle, CheckCircle } from 'lucide-react';
 
 export default function SearchResultsPage({ searchQuery, onSelectProduct, onBackToSearch }) {
   // Filter products based on search query
@@ -42,34 +42,44 @@ export default function SearchResultsPage({ searchQuery, onSelectProduct, onBack
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {results.map((product) => (
-              <div 
-                key={product.id}
-                onClick={() => onSelectProduct(product)}
-                className="bg-white border border-gray-100 rounded-2xl p-6 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4"
-              >
-                <div>
-                  <div className="mb-3">
-                    <h3 className="font-bold text-gray-900 text-lg leading-tight group-hover:text-forest transition-colors">{product.name}</h3>
-                    <p className="text-sm text-gray-500">{product.brand}</p>
+            {results.map((product) => {
+              const isEdible = product.isEdible ?? false;
+              const edibilityMessage = product.edibilityMessage || (isEdible 
+                ? "Safe and edible for your health profile" 
+                : "It is not edible for person with kidney issue");
+
+              return (
+                <div 
+                  key={product.id}
+                  onClick={() => onSelectProduct(product)}
+                  className="bg-white border border-gray-100 rounded-2xl p-6 shadow-2xs hover:shadow-md transition-all cursor-pointer flex flex-col justify-between space-y-4 group"
+                >
+                  <div>
+                    <div className="mb-4">
+                      <h3 className="font-bold text-gray-900 text-lg leading-tight group-hover:text-forest transition-colors">
+                        {product.name}
+                      </h3>
+                      <p className="text-sm text-gray-500">{product.brand}</p>
+                    </div>
+
+                    <div className={`p-4 rounded-xl border flex items-center space-x-3 ${
+                      isEdible
+                        ? 'bg-emerald-50/80 border-emerald-200 text-emerald-800'
+                        : 'bg-red-50/90 border-red-200 text-red-800'
+                    }`}>
+                      {isEdible ? (
+                        <CheckCircle className="w-5 h-5 text-emerald-600 shrink-0" />
+                      ) : (
+                        <AlertCircle className="w-5 h-5 text-red-600 shrink-0" />
+                      )}
+                      <p className="text-sm font-semibold leading-snug">
+                        {edibilityMessage}
+                      </p>
+                    </div>
                   </div>
-                  <p className="text-xs text-gray-600 line-clamp-3">{product.ingredients}</p>
                 </div>
-                
-                <div className="flex items-center justify-between mt-4 pt-4 border-t border-gray-50">
-                  <span className="inline-flex items-center px-2.5 py-1 rounded-full text-[10px] font-bold bg-emerald-50 text-emerald-700 uppercase border border-emerald-100">
-                    {product.category}
-                  </span>
-                  
-                  {product.allergyAlert && product.allergensFound && product.allergensFound.length > 0 && (
-                    <span className="inline-flex items-center space-x-1 text-red-600 text-xs font-semibold">
-                      <AlertCircle className="w-3.5 h-3.5" />
-                      <span>{product.allergensFound.length} Allergens</span>
-                    </span>
-                  )}
-                </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 

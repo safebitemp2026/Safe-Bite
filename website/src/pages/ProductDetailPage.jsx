@@ -100,7 +100,17 @@ export default function ProductDetailPage({ product, onBackToSearch, onSelectPro
               {/* Alert Badge */}
               <div className="inline-flex items-center space-x-1.5 bg-white border border-red-300 text-red-600 font-bold px-3 py-1.5 rounded-xl text-xs shadow-2xs">
                 <AlertTriangle className="w-4 h-4 text-red-500" />
-                <span>{currentProduct.allergyAlert}</span>
+                <span>{currentProduct.edibilityStatus || currentProduct.allergyAlert}</span>
+              </div>
+
+              {/* Edibility Verdict Message */}
+              <div className="p-3.5 bg-red-100/80 border border-red-200/90 rounded-xl">
+                <p className="text-[11px] font-bold uppercase tracking-wider text-red-700 mb-1">
+                  Health & Edibility Verdict
+                </p>
+                <p className="text-sm font-bold text-red-900 leading-snug">
+                  {currentProduct.edibilityMessage || "It is not edible for person with kidney issue"}
+                </p>
               </div>
 
               <div className="space-y-2">

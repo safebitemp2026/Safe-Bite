@@ -1,11 +1,21 @@
 import { 
-  Users, AlertTriangle, Package, ScanLine, 
-  TrendingUp, TrendingDown, Clock
+  Users, CheckCircle, AlertTriangle, Clock
 } from 'lucide-react';
+import { useUsers } from '../context/UsersContext';
 
 const Dashboard = () => {
+  const { users } = useUsers();
+
+  const totalUsers = users.length;
+  const activeUsers = users.filter(u => u.status === 'Active').length;
+  const blockedUsers = users.filter(u => u.status === 'Blocked').length;
+  const suspendedUsers = users.filter(u => u.status === 'Suspended').length;
+
   const stats = [
-    { title: 'Total Users', value: '0', change: '+ 15%', isUp: true, icon: Users, color: 'text-green-600', bg: 'bg-green-100' },
+    { title: 'Total Users', value: totalUsers, icon: Users, color: 'text-primary', bg: 'bg-green-100' },
+    { title: 'Active Users', value: activeUsers, icon: CheckCircle, color: 'text-emerald-600', bg: 'bg-emerald-100' },
+    { title: 'Blocked Users', value: blockedUsers, icon: AlertTriangle, color: 'text-red-600', bg: 'bg-red-100' },
+    { title: 'Suspended Users', value: suspendedUsers, icon: Clock, color: 'text-amber-600', bg: 'bg-amber-100' },
   ];
 
   return (
@@ -21,13 +31,12 @@ const Dashboard = () => {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {stats.map((stat, i) => (
           <div key={i} className="card flex items-center justify-between">
             <div>
               <p className="text-sm text-gray-500 font-medium mb-1">{stat.title}</p>
-              <h3 className="text-2xl font-bold text-gray-900 mb-2">{stat.value}</h3>
-
+              <h3 className="text-2xl font-bold text-gray-900 mb-0">{stat.value}</h3>
             </div>
             <div className={`w-12 h-12 rounded-full flex items-center justify-center ${stat.bg} ${stat.color}`}>
               <stat.icon size={24} />

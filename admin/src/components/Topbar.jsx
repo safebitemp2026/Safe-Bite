@@ -1,27 +1,18 @@
 import { useState } from 'react';
-import { Search as SearchIcon, CheckCircle, AlertTriangle, UserX } from 'lucide-react';
+import { Search as SearchIcon, CheckCircle, AlertTriangle, Clock } from 'lucide-react';
 import UserActionModal from './UserActionModal';
-
-const usersData = [
-  { name: 'Rahul Kumar', status: 'Active' },
-  { name: 'Anu Thomas', status: 'Active' },
-  { name: 'Arjun S', status: 'Blocked' },
-  { name: 'Sneha Nair', status: 'Active' },
-  { name: 'Vishnu P', status: 'Active' },
-  { name: 'Meera K', status: 'Active' },
-  { name: 'Karthik R', status: 'Active' },
-  { name: 'Fathima S', status: 'Inactive' },
-  { name: 'Sajith D', status: 'Active' },
-  { name: 'Divya R', status: 'Active' },
-];
+import { useUsers } from '../context/UsersContext';
 
 const Topbar = () => {
+  const { users, updateUserStatus, deleteUser } = useUsers();
   const [searchQuery, setSearchQuery] = useState('');
   const [isFocused, setIsFocused] = useState(false);
   const [selectedUser, setSelectedUser] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const filteredUsers = usersData.filter(user => 
+  // Show unique users by name in topbar search
+  const uniqueUsers = Array.from(new Map(users.map(u => [u.name, u])).values());
+  const filteredUsers = uniqueUsers.filter(user => 
     user.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
@@ -59,7 +50,7 @@ const Topbar = () => {
                       <span className="text-base font-semibold text-gray-900">{user.name}</span>
                       {user.status === 'Active' && <span className="flex items-center gap-2 text-green-600 text-sm font-semibold"><CheckCircle size={16}/> Active</span>}
                       {user.status === 'Blocked' && <span className="flex items-center gap-2 text-red-600 text-sm font-semibold"><AlertTriangle size={16}/> Blocked</span>}
-                      {user.status === 'Inactive' && <span className="flex items-center gap-2 text-gray-500 text-sm font-semibold"><UserX size={16}/> Inactive</span>}
+                      {user.status === 'Suspended' && <span className="flex items-center gap-2 text-amber-600 text-sm font-semibold"><Clock size={16}/> Suspended</span>}
                     </li>
                   ))}
                 </ul>
@@ -86,6 +77,8 @@ const Topbar = () => {
       {isModalOpen && selectedUser && (
         <UserActionModal 
           selectedUser={selectedUser} 
+          onUpdateStatus={updateUserStatus}
+          onDeleteUser={deleteUser}
           onClose={() => {
             setIsModalOpen(false);
             setSelectedUser(null);

@@ -149,62 +149,74 @@ class _BasicDetailsScreenState extends State<BasicDetailsScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              const SizedBox(height: 20),
-              const ProgressDots(currentIndex: 0),
-              const SizedBox(height: 32),
-              Text('Basic details', style: Theme.of(context).textTheme.displayMedium),
-              const SizedBox(height: 24),
-              TextField(decoration: const InputDecoration(labelText: 'Full name'), onChanged: (val) => setState(() => _name = val.trim())),
-              const SizedBox(height: 16),
-              TextField(decoration: const InputDecoration(labelText: 'Age'), keyboardType: TextInputType.number, onChanged: (val) => setState(() => _age = val.trim())),
-              const SizedBox(height: 16),
-              Row(
-                children: [
-                  Expanded(child: TextField(decoration: const InputDecoration(labelText: 'Weight (kg)'), keyboardType: TextInputType.number, onChanged: (val) => setState(() => _weight = val.trim()))),
-                  const SizedBox(width: 16),
-                  Expanded(child: TextField(decoration: const InputDecoration(labelText: 'Height (cm)'), keyboardType: TextInputType.number, onChanged: (val) => setState(() => _height = val.trim()))),
-                ],
-              ),
-              const SizedBox(height: 24),
-              const Text('Gender', style: TextStyle(fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              Row(
-                children: ['Female', 'Male'].map((g) {
-                  bool isSelected = selectedGender == g;
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: ChoiceChip(
-                      label: Text(g),
-                      selected: isSelected,
-                      onSelected: (val) => setState(() => selectedGender = g),
-                      selectedColor: AppTheme.primaryGreen,
-                      labelStyle: TextStyle(color: isSelected ? Colors.white : AppTheme.darkGreen),
-                    ),
-                  );
-                }).toList(),
-              ),
-              const Spacer(),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: !_isFormValid ? null : () {
-                    globalGender = selectedGender!;
-                    if (selectedGender == 'Female') {
-                      Navigator.pushNamed(context, '/female_health');
-                    } else {
-                      Navigator.pushNamed(context, '/dietary_preference');
-                    }
-                  },
-                  child: const Text('Continue'),
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(24.0),
+              child: ConstrainedBox(
+                constraints: BoxConstraints(minHeight: constraints.maxHeight - 48),
+                child: IntrinsicHeight(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const SizedBox(height: 20),
+                      const ProgressDots(currentIndex: 0),
+                      const SizedBox(height: 32),
+                      Text('Basic details', style: Theme.of(context).textTheme.displayMedium),
+                      const SizedBox(height: 24),
+                      TextField(decoration: const InputDecoration(labelText: 'Full name'), onChanged: (val) => setState(() => _name = val.trim())),
+                      const SizedBox(height: 16),
+                      TextField(decoration: const InputDecoration(labelText: 'Age'), keyboardType: TextInputType.number, onChanged: (val) => setState(() => _age = val.trim())),
+                      const SizedBox(height: 16),
+                      Row(
+                        children: [
+                          Expanded(child: TextField(decoration: const InputDecoration(labelText: 'Weight (kg)'), keyboardType: TextInputType.number, onChanged: (val) => setState(() => _weight = val.trim()))),
+                          const SizedBox(width: 16),
+                          Expanded(child: TextField(decoration: const InputDecoration(labelText: 'Height (cm)'), keyboardType: TextInputType.number, onChanged: (val) => setState(() => _height = val.trim()))),
+                        ],
+                      ),
+                      const SizedBox(height: 24),
+                      const Text('Gender', style: TextStyle(fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 8),
+                      Row(
+                        children: ['Female', 'Male'].map((g) {
+                          bool isSelected = selectedGender == g;
+                          return Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: ChoiceChip(
+                              label: Text(g),
+                              selected: isSelected,
+                              onSelected: (val) => setState(() => selectedGender = g),
+                              selectedColor: AppTheme.primaryGreen,
+                              labelStyle: TextStyle(color: isSelected ? Colors.white : AppTheme.darkGreen),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                      const Spacer(),
+                      const SizedBox(height: 16),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          onPressed: !_isFormValid ? null : () {
+                            globalGender = selectedGender!;
+                            if (selectedGender == 'Female') {
+                              Navigator.pushNamed(context, '/female_health');
+                            } else {
+                              globalIsPregnant.value = false;
+                              globalWantPcosWarnings.value = false;
+                              Navigator.pushNamed(context, '/dietary_preference');
+                            }
+                          },
+                          child: const Text('Continue'),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -220,6 +232,13 @@ class FemaleHealthScreen extends StatefulWidget {
 class _FemaleHealthScreenState extends State<FemaleHealthScreen> {
   bool isPregnant = false;
   bool wantPcosWarnings = false;
+
+  @override
+  void initState() {
+    super.initState();
+    isPregnant = globalIsPregnant.value;
+    wantPcosWarnings = globalWantPcosWarnings.value;
+  }
 
   Widget buildToggle(String title, bool value, Function(bool) onChanged) {
     return Column(
@@ -286,7 +305,11 @@ class _FemaleHealthScreenState extends State<FemaleHealthScreen> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: () => Navigator.pushNamed(context, '/dietary_preference'),
+                  onPressed: () {
+                    globalIsPregnant.value = isPregnant;
+                    globalWantPcosWarnings.value = wantPcosWarnings;
+                    Navigator.pushNamed(context, '/dietary_preference');
+                  },
                   child: const Text('Continue'),
                 ),
               ),
@@ -581,7 +604,7 @@ class _UploadReportsScreenState extends State<UploadReportsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    bool canContinue = healthUploaded || allergyUploaded;
+    bool canContinue = healthUploaded && allergyUploaded;
     return Scaffold(
       body: SafeArea(
         child: Padding(
@@ -602,18 +625,12 @@ class _UploadReportsScreenState extends State<UploadReportsScreen> {
                 setState(() => allergyUploaded = !allergyUploaded);
               }),
               const Spacer(),
-              Row(
-                children: [
-                  TextButton(onPressed: () => Navigator.pushNamed(context, '/profile_setup'), child: const Text('Skip', style: TextStyle(color: Colors.grey))),
-                  const Spacer(),
-                  ElevatedButton(
-                    onPressed: canContinue ? () => Navigator.pushNamed(context, '/profile_setup') : null,
-                    child: const Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 24),
-                      child: Text('Continue'),
-                    ),
-                  ),
-                ],
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: canContinue ? () => Navigator.pushNamed(context, '/profile_setup') : null,
+                  child: const Text('Continue'),
+                ),
               ),
             ],
           ),

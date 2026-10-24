@@ -16,8 +16,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   List<String> _medicalConditions = [];
   String _healthReport = 'No report uploaded';
   String _allergyReport = 'No report uploaded';
-  bool _isPregnant = false;
-  bool _wantPcosWarnings = false;
+
 
   void _showDietaryPreferenceDialog() {
     bool isCustom = !['Non Vegetarian', 'Vegetarian', 'Vegan'].contains(_dietaryPreference);
@@ -323,8 +322,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _showFemaleHealthDialog() {
-    bool tempPregnant = _isPregnant;
-    bool tempPcos = _wantPcosWarnings;
+    bool tempPregnant = globalIsPregnant.value;
+    bool tempPcos = globalWantPcosWarnings.value;
     showDialog(
       context: context,
       builder: (context) {
@@ -336,7 +335,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   SwitchListTile(
-                    title: const Text('Are you pregnant?'),
+                    title: const Text('Currently pregnant?'),
                     value: tempPregnant,
                     onChanged: (val) {
                       setStateDialog(() => tempPregnant = val);
@@ -359,10 +358,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
                 TextButton(
                   onPressed: () {
-                    setState(() {
-                      _isPregnant = tempPregnant;
-                      _wantPcosWarnings = tempPcos;
-                    });
+                    globalIsPregnant.value = tempPregnant;
+                    globalWantPcosWarnings.value = tempPcos;
                     Navigator.pop(context);
                   },
                   child: const Text('Save', style: TextStyle(color: AppTheme.primaryGreen, fontWeight: FontWeight.bold)),

@@ -110,12 +110,19 @@ class HomeView extends StatelessWidget {
                               if (productName.isNotEmpty) {
                                 scannedProductsHistory.add(productName);
                               }
+                              final lower = productName.toLowerCase();
+                              final bool isEdible = !lower.contains('non') &&
+                                  !lower.contains('avoid') &&
+                                  !lower.contains('bad') &&
+                                  !lower.contains('unhealthy');
                               Navigator.pop(context);
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (_) =>
-                                          const ScanResultScreen()));
+                                      builder: (_) => ScanResultScreen(
+                                            isEdible: isEdible,
+                                            productName: productName,
+                                          )));
                             }
                           : null,
                       child: const Text('Scan'),

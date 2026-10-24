@@ -22,8 +22,6 @@ class AiAssistantScreen extends StatelessWidget {
             ),
             child: Row(
               children: [
-                const Icon(Icons.mic_none, color: Colors.grey),
-                const SizedBox(width: 16),
                 const Expanded(
                   child: TextField(
                     decoration: InputDecoration(

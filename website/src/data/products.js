@@ -6,6 +6,9 @@ export const PRODUCTS = [
     category: "Snacks",
     barcode: "8901063010123",
     scannedBadge: "Scanned via SafeBite App",
+    isEdible: false,
+    edibilityStatus: "Non Edible",
+    edibilityMessage: "It is not edible for person with kidney issue",
     allergyAlert: "May Cause Allergy",
     allergensFound: ["Peanut", "Milk", "Soy"],
     novaClass: 4,
@@ -24,17 +27,18 @@ export const PRODUCTS = [
       { name: "Soy", description: "Soy lecithin and soybean oil" }
     ],
     harmfulConditions: [
+      { condition: "Kidney Disease / Renal Impairment", description: "High sodium concentration (1.2g/100g) strains renal filtration." },
+      { condition: "Hypertension", description: "Excess salt elevates blood pressure significantly." },
       { condition: "Peanut Allergy", description: "May trigger a severe allergic response." },
       { condition: "Milk Allergy", description: "Contains dairy-derived ingredients." },
-      { condition: "Soy Allergy", description: "Soy ingredients are present." },
-      { condition: "Food Allergies / Atopic Individuals", description: "Extra caution is recommended." }
+      { condition: "Soy Allergy", description: "Soy ingredients are present." }
     ],
     healthRisks: [
-      { title: "High Sodium Level", severity: "High", detail: "1.2g per 100g exceeds recommended daily threshold for sodium." },
+      { title: "High Sodium Level", severity: "High", detail: "1.2g per 100g exceeds recommended daily threshold for sodium. Unsafe for kidney patients." },
       { title: "High Saturated Fat", severity: "Medium", detail: "Edible vegetable oil contributes to 34.1g fat total." },
       { title: "NOVA Class 4", severity: "High", detail: "Ultra-processed product containing flavor enhancers and acidity regulators." }
     ],
-    aiSummary: "Lays Classic Salted is an ultra-processed potato snack high in calories, fats, and sodium. It contains trace dairy (milk solids) and soybean derivatives which can trigger reactions in sensitized individuals. Consume in moderation."
+    aiSummary: "Lays Classic Salted is an ultra-processed snack high in sodium and saturated fats. It is not recommended for individuals with kidney issues or high blood pressure due to extreme sodium content."
   },
   {
     id: "maggi-noodles",
@@ -43,6 +47,9 @@ export const PRODUCTS = [
     category: "Instant Foods",
     barcode: "8901058852119",
     scannedBadge: "Scanned via SafeBite App",
+    isEdible: false,
+    edibilityStatus: "Non Edible",
+    edibilityMessage: "It is not edible for person with kidney issue or celiac disease",
     allergyAlert: "Contains Gluten & Wheat",
     allergensFound: ["Wheat", "Gluten", "Soy"],
     novaClass: 4,
@@ -60,15 +67,16 @@ export const PRODUCTS = [
       { name: "Soy / Hydrolyzed Protein", description: "Hydrolyzed vegetable protein in seasoning" }
     ],
     harmfulConditions: [
+      { condition: "Kidney Disease", description: "Concentrated sodium in tastemaker stresses renal function." },
       { condition: "Celiac Disease", description: "Contains significant wheat gluten." },
       { condition: "Hypertension", description: "High sodium content per serving." },
       { condition: "Wheat Allergy", description: "Triggers immediate IgE-mediated response." }
     ],
     healthRisks: [
       { title: "Refined Wheat Flour", severity: "Medium", detail: "High glycemic index refined carbohydrate base." },
-      { title: "High Sodium", severity: "High", detail: "Tastemaker packet contains concentrated sodium." }
+      { title: "High Sodium", severity: "High", detail: "Tastemaker packet contains concentrated sodium dangerous for kidneys." }
     ],
-    aiSummary: "Maggi Masala Noodles are a popular instant dish but fall into NOVA Class 4. High in refined wheat flour and sodium. Unsuitable for individuals with Celiac disease or gluten intolerance."
+    aiSummary: "Maggi Masala Noodles are ultra-processed (NOVA 4) with high sodium and gluten. Unsuitable for individuals with kidney disease, hypertension, or Celiac disease."
   },
   {
     id: "coca-cola",
@@ -77,6 +85,9 @@ export const PRODUCTS = [
     category: "Beverages",
     barcode: "5449000000996",
     scannedBadge: "Scanned via SafeBite App",
+    isEdible: false,
+    edibilityStatus: "Non Edible",
+    edibilityMessage: "It is not edible for person with diabetes",
     allergyAlert: "High Added Sugar Alert",
     allergensFound: ["Caffeine", "Sulphites"],
     novaClass: 4,
@@ -101,7 +112,7 @@ export const PRODUCTS = [
       { title: "Excessive Added Sugar", severity: "High", detail: "35g sugar in a single 330ml can exceeds WHO daily intake guideline." },
       { title: "Phosphoric Acid", severity: "Medium", detail: "High consumption may affect calcium absorption." }
     ],
-    aiSummary: "Coca-Cola is an ultra-processed carbonated beverage with high added sugar density. Free of common food allergens like nuts or dairy, but poses risk for diabetics and those avoiding caffeine."
+    aiSummary: "Coca-Cola is an ultra-processed carbonated beverage with high added sugar density. Poses significant health risk for diabetic individuals and those avoiding high glycemic loads."
   },
   {
     id: "pepsi",
@@ -110,6 +121,9 @@ export const PRODUCTS = [
     category: "Beverages",
     barcode: "012000000133",
     scannedBadge: "Scanned via SafeBite App",
+    isEdible: false,
+    edibilityStatus: "Non Edible",
+    edibilityMessage: "It is not edible for person with diabetes",
     allergyAlert: "High Added Sugar Alert",
     allergensFound: ["Caffeine"],
     novaClass: 4,
@@ -132,7 +146,7 @@ export const PRODUCTS = [
     healthRisks: [
       { title: "High Fructose Corn Syrup", severity: "High", detail: "Linked to hepatic fat accumulation and metabolic strain." }
     ],
-    aiSummary: "Pepsi is a sugar-sweetened carbonated drink. Low in food allergen risk, but high in simple sugars and metabolic health risk factors."
+    aiSummary: "Pepsi is a sugar-sweetened carbonated drink with high glycemic carbohydrates. Unsafe for diabetics and individuals with insulin resistance."
   },
   {
     id: "kelloggs-corn-flakes",
@@ -141,6 +155,9 @@ export const PRODUCTS = [
     category: "Breakfast Cereals",
     barcode: "380001600011",
     scannedBadge: "Scanned via SafeBite App",
+    isEdible: false,
+    edibilityStatus: "Non Edible",
+    edibilityMessage: "It is not edible for person with celiac disease",
     allergyAlert: "May Contain Barley (Gluten)",
     allergensFound: ["Barley Malt Extract", "Gluten"],
     novaClass: 3,
@@ -157,11 +174,38 @@ export const PRODUCTS = [
       { name: "Barley Malt Extract", description: "Contains gluten from barley malt" }
     ],
     harmfulConditions: [
-      { condition: "Barley / Gluten Intolerance", description: "Malt flavoring contains trace barley proteins." }
+      { condition: "Celiac Disease / Gluten Intolerance", description: "Malt flavoring contains trace barley proteins unsafe for celiac patients." }
     ],
     healthRisks: [
       { title: "High Glycemic Index", severity: "Medium", detail: "Fast-digesting corn starches can cause hunger rebounds." }
     ],
-    aiSummary: "Kellogg's Corn Flakes are fortified breakfast flakes derived from corn. Fortified with essential vitamins, but contains barley malt extract which renders it unsafe for strict Celiac patients."
+    aiSummary: "Kellogg's Corn Flakes contain barley malt extract which renders it unsafe for strict Celiac disease patients."
+  },
+  {
+    id: "tender-coconut-water",
+    name: "Pure Tender Coconut Water",
+    brand: "Nature's Pure",
+    category: "Beverages",
+    barcode: "8901234567890",
+    scannedBadge: "Scanned via SafeBite App",
+    isEdible: true,
+    edibilityStatus: "Edible",
+    edibilityMessage: "Safe and edible for your health profile",
+    allergyAlert: "No Allergens Found",
+    allergensFound: [],
+    novaClass: 1,
+    novaLabel: "Unprocessed Natural Food",
+    ingredients: "100% Pure Natural Tender Coconut Water.",
+    nutritionPer100g: {
+      energy: "19 kcal",
+      protein: "0.7g",
+      carbohydrate: "3.7g",
+      totalFat: "0.2g",
+      sodium: "0.02g"
+    },
+    allergySubstances: [],
+    harmfulConditions: [],
+    healthRisks: [],
+    aiSummary: "Pure natural coconut water is rich in hydration minerals and electrolytes without artificial additives or excessive sodium. Safe for daily diet."
   }
 ];
